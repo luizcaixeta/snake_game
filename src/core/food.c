@@ -1,0 +1,1 @@
+// A comida deve aparecer em locais aleatórios do mapa, desde que esse local aleatório não seja uma parede ou a própria cobra 

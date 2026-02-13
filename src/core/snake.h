@@ -16,5 +16,6 @@ typedef struct Snake {
 Snake* create_snake(int x, int y);
 void grow_snake(Snake* snake);
 void move_snake(Snake* snake, int dx, int dy);
+int snake_contains(const Snake* snake, int x, int y);
 
 #endif

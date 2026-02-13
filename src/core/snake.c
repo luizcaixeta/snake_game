@@ -11,12 +11,11 @@ A cada movimento da cobra, a poisção de cada segmento é atualizada para a pos
 Quando a cobra colidir com a parede ela aparece do outro lado da tela, ou seja, se a cobra colidir com a parede direita ela aparece na parede esquerda;
 */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include "snake.h"
-#define GRID_WIDTH 20
-#define GRID_HEIGHT 20
+#include "grid.h"
 
+// cria a cobra com 1 segmento inicial na posição (x, y)
 Snake* create_snake(int x, int y) {
     Snake* snake = malloc(sizeof(Snake));
     if (!snake) return NULL;
@@ -38,6 +37,7 @@ Snake* create_snake(int x, int y) {
     return snake;
 }
 
+// adiciona 1 segmento no fim da cobra (posição atual da cauda)
 void grow_snake(Snake* snake) {
     if (snake == NULL || snake->tail == NULL) return;
 
@@ -54,6 +54,7 @@ void grow_snake(Snake* snake) {
     snake->length++;
 }
 
+// move a cabeça por (dx, dy), o corpo segue a cabeça
 void move_snake(Snake* snake, int dx, int dy) {
     if (snake == NULL || snake->head == NULL) return;
 
@@ -89,3 +90,15 @@ void move_snake(Snake* snake, int dx, int dy) {
     }
 }
 
+// retorna 1 se algum segmento da cobra está em (x, y), caso contrário retorna 0
+int snake_contains(const Snake* snake, int x, int y) {
+    const Segment* current = snake ? snake->head : NULL;
+    while (current != NULL) {
+        if (current->x == x && current->y == y) {
+            return 1;
+        }
+        current = current->next;
+    }
+
+    return 0;
+}

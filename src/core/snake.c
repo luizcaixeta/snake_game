@@ -13,34 +13,79 @@ Quando a cobra colidir com a parede ela aparece do outro lado da tela, ou seja, 
 
 #include <stdio.h>
 #include <stdlib.h>
-
-typedef struct Segment {
-    int x;
-    int y;
-    struct Segment* next;
-} Segment;
-
-typedef struct Snake {
-    Segment* head;
-    Segment* tail;
-    int length;
-} Snake;
+#include "snake.h"
+#define GRID_WIDTH 20
+#define GRID_HEIGHT 20
 
 Snake* create_snake(int x, int y) {
+    Snake* snake = malloc(sizeof(Snake));
+    if (!snake) return NULL;
 
+    Segment* segment = malloc(sizeof(Segment));
+    if (!segment) {
+        free(snake);
+        return NULL;
+    }
+
+    segment->x = x;
+    segment->y = y;
+    segment->next = NULL;
+
+    snake->head = segment;
+    snake->tail = segment;
+    snake->length = 1;
+
+    return snake;
 }
 
 void grow_snake(Snake* snake) {
-    // configura o crescimento da cobra (x, y) -> (x + dx, x +)
+    if (snake == NULL || snake->tail == NULL) return;
+
+    Segment* new_segment = malloc(sizeof(Segment));
+    if (new_segment == NULL) return;
+
+    // um novo segmento nasce na posição atual da cauda
+    new_segment->x = snake->tail->x;
+    new_segment->y = snake->tail->y;
+    new_segment->next = NULL;
+
+    snake->tail->next = new_segment;
+    snake->tail = new_segment;
+    snake->length++;
 }
 
 void move_snake(Snake* snake, int dx, int dy) {
-    // atualiza a posição de cada segmento para a posição do segmento anterior
-    // move a cabeça da cobra para a nova posição
-}
+    if (snake == NULL || snake->head == NULL) return;
 
-int check_collision(Snake* snake) {
-    // verifica se a cabeça da cobra colidiu com o corpo da cobra: return 1;
-    // sem colisão: return 0;
+    int prev_x = snake->head->x;
+    int prev_y = snake->head->y;
+
+    int new_x = prev_x + dx;
+    int new_y = prev_y + dy;
+
+    // wrap horizontal
+    if (new_x < 0) new_x = GRID_WIDTH - 1;
+    else if (new_x >= GRID_WIDTH) new_x = 0;
+
+    // wrap vertical
+    if (new_y < 0) new_y = GRID_HEIGHT - 1;
+    else if (new_y >= GRID_HEIGHT) new_y = 0;
+    
+    snake->head->x = new_x;
+    snake->head->y = new_y;
+
+    Segment* current = snake->head->next;
+    while (current != NULL) {
+        int temp_x = current->x;
+        int temp_y = current->y;
+
+        current->x = prev_x;
+        current->y = prev_y;
+
+        prev_x = temp_x;
+        prev_y = temp_y;
+
+        current = current->next;
+    }
 }
 

@@ -14,8 +14,6 @@ int check_collision(Snake* snake) {
         if (current->x == head_x && current->y == head_y) {
             return 1;
         }
-
-        return 0;
     }
 
     return 0;
